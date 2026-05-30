@@ -1,0 +1,4 @@
+- ana ekran
+- search ekran
+- favoriler ekranı
+- movie detay ekran
