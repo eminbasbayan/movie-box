@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { Pressable, Text } from 'react-native';
+import Counter from '../../components/Counter';
 
 function HomeScreen() {
   const router = useRouter();
@@ -15,6 +16,7 @@ function HomeScreen() {
       <Pressable onPress={handlePress}>
         <Text>Film Detayına Git</Text>
       </Pressable>
+      <Counter />
     </>
   );
 }
