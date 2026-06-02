@@ -1,6 +1,5 @@
 import { useRouter } from 'expo-router';
-import { Pressable, Text } from 'react-native';
-import Counter from '../../components/Counter';
+import { Pressable, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -48,8 +47,21 @@ function HomeScreen() {
           {theme === 'dark' ? 'light' : 'dark'}
         </Text>
       </Pressable>
+
+      <Text style={styles.redText}>Hi!</Text>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  redText: {
+    color: 'red',
+    padding: 10,
+    backgroundColor: "blue"
+  },
+});
 
 export default HomeScreen;
