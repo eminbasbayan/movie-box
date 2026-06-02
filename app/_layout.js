@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+import ThemeProvider from '../context/ThemeContext';
 
 function RootLayoutContent() {
   return (
@@ -19,7 +20,11 @@ function RootLayoutContent() {
 }
 
 function RootLayout() {
-  return <RootLayoutContent />;
+  return (
+    <ThemeProvider>
+      <RootLayoutContent />
+    </ThemeProvider>
+  );
 }
 
 export default RootLayout;
