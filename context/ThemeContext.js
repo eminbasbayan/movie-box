@@ -1,10 +1,14 @@
 import { createContext, useContext, useState } from 'react';
 import Colors from '../constants/colors';
+import { useColorScheme } from 'react-native';
 
 const ThemeContext = createContext();
 
 export default function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState('dark');
+  const systemScheme = useColorScheme();
+  console.log(systemScheme);
+  
+  const [theme, setTheme] = useState(systemScheme || 'dark');
 
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
