@@ -1,6 +1,6 @@
 const Colors = {
   dark: {
-    backgroud: '#1a1a2e',
+    background: '#1a1a2e',
     surface: '#16213e',
     card: '#0f3460',
     primary: '#e94560',
@@ -18,7 +18,7 @@ const Colors = {
     success: '#00c851',
   },
   light: {
-    backgroud: '#f5f5f5',
+    background: '#f5f5f5',
     surface: '#ffffff',
     card: '#ffffff',
     primary: '#e94560',
