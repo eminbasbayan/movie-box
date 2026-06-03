@@ -1,54 +1,46 @@
-import { useRouter } from 'expo-router';
-import { Pressable, Text, StyleSheet } from 'react-native';
+import { Pressable, Text, StyleSheet, FlatList, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/ThemeContext';
+import Fonts from '../../constants/fonts';
+import { Ionicons } from '@expo/vector-icons';
 
 function HomeScreen() {
-  const router = useRouter();
   const { theme, colors, toggleTheme } = useTheme();
 
-  function handlePress() {
-    router.push('/movie/456');
-    /* console.log("Tıklandı!"); */
-  }
 
   return (
     <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: colors.background,
-      }}
+      style={[styles.container, { backgroundColor: colors.background }]}
     >
-      <Text
-        style={{
-          color: colors.text,
-        }}
-      >
-        Home Screen
-      </Text>
-      <Pressable onPress={handlePress}>
-        <Text
-          style={{
-            color: colors.text,
-          }}
-        >
-          Film Detayına Git
-        </Text>
-      </Pressable>
-
-      <Pressable onPress={toggleTheme}>
-        <Text
-          style={{
-            color: colors.text,
-            padding: 10,
-            marginTop: 10,
-          }}
-        >
-          {theme === 'dark' ? 'light' : 'dark'}
-        </Text>
-      </Pressable>
-
-      <Text style={styles.redText}>Hi!</Text>
+      <FlatList
+        data={[
+          { key: 1, title: 'Movie 1' },
+          { key: 2, title: 'Movie 2' },
+          { key: 3, title: 'Movie 3' },
+        ]}
+        keyExtractor={(item) => item.key}
+        contentContainerStyle={styles.contenContainer}
+        ListHeaderComponent={
+          <View style={styles.header}>
+            <View>
+              <Text style={[styles.appTitle, { color: colors.primary }]}>
+                MovieBox
+              </Text>
+              <Text style={[styles.subTitle, { color: colors.textSecondary }]}>
+                Filmleri Keşfedin
+              </Text>
+            </View>
+            <Pressable onPress={toggleTheme} style={styles.themeButton}>
+              <Ionicons name={theme === "dark" ? "sunny" : "moon"} size={24} color={colors.text} />
+            </Pressable>
+          </View>
+        }
+        renderItem={({item})=>(
+          <View>
+            <Text> {item.title} </Text>
+          </View>
+        )}
+      />
     </SafeAreaView>
   );
 }
@@ -57,11 +49,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  redText: {
-    color: 'red',
-    padding: 10,
-    backgroundColor: "blue"
+  contenContainer: {
+    paddingBottom: 24,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 16,
+  },
+  appTitle: {
+    fontSize: Fonts.sizes.title,
+    fontWeight: Fonts.weights.bold,
+  },
+  subTitle: {
+    fontSize: Fonts.sizes.md,
+    marginTop: 2,
+  },
+  themeButton: {
+    padding: 8
+  }
 });
 
 export default HomeScreen;
