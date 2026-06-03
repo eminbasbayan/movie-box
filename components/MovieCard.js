@@ -1,9 +1,8 @@
-import { Text, View } from 'react-native';
-import { Image, Pressable, StyleSheet } from 'react-native';
+import { Text, View, Image, Pressable, StyleSheet } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import Fonts from '../constants/fonts';
 
-export default function MovieCard() {
+export default function MovieCard({ horizontal }) {
   const { colors } = useTheme();
   const handlePress = () => {};
 
@@ -17,6 +16,7 @@ export default function MovieCard() {
           backgroundColor: colors.card,
           opacity: pressed ? 0.8 : 1,
         },
+        horizontal && styles.horizontalCard,
       ]}
     >
       <Image
@@ -44,6 +44,15 @@ export default function MovieCard() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBlock: 16,
+  },
+  horizontalCard: {
+    marginRight: 12,
+    marginBottom: 0,
+  },
   poster: {
     width: '100%',
     borderTopLeftRadius: 12,
@@ -66,7 +75,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
-    width: 32,
   },
   ratingText: {
     fontSize: Fonts.sizes.sm,

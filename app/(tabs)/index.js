@@ -8,7 +8,7 @@ import MovieCard from '../../components/MovieCard';
 function MovieSection(props) {
   const { colors } = useTheme();
   return (
-    <View>
+    <View style={styles.section}>
       <Text style={[styles.sectionTitle, { color: colors.text }]}>
         {props.title}
       </Text>
@@ -19,8 +19,11 @@ function MovieSection(props) {
           { id: 3, name: 'Movie 3' },
         ]}
         keyExtractor={(item) => item.id.toString()}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.horizontalList}
         renderItem={({ item }) => (
-         <MovieCard />
+         <MovieCard horizontal />
         )}
       />
     </View>
@@ -108,12 +111,18 @@ const styles = StyleSheet.create({
   themeButton: {
     padding: 8,
   },
+  section: {
+  marginBottom: 24
+  },
   sectionTitle: {
     fontSize: Fonts.sizes.xl,
     fontWeight: Fonts.weights.bold,
     paddingHorizontal: 16,
     marginBottom: 12,
   },
+  horizontalList:{
+    paddingHorizontal: 16
+  }
 });
 
 export default HomeScreen;
