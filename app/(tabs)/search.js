@@ -4,9 +4,30 @@ import { useTheme } from '../../context/ThemeContext';
 import Fonts from '../../constants/fonts';
 import MovieCard from '../../components/MovieCard';
 import SearchBar from '../../components/SearchBar';
+import GenreChip from '../../components/GenreChip';
 
 function SearchScreen() {
   const { colors } = useTheme();
+
+  function renderHeader() {
+    return (
+      <View>
+        <FlatList
+          data={[
+            { id: 1, name: 'Aksiyon' },
+            { id: 2, name: 'Macera' },
+            { id: 3, name: 'Animasyon' },
+          ]}
+          keyExtractor={(item) => item.id.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.genreList}
+          renderItem={({ item }) => <GenreChip genre={item} />}
+        />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
@@ -23,7 +44,7 @@ function SearchScreen() {
         numColumns={2}
         contentContainerStyle={styles.listContent}
         columnWrapperStyle={styles.row}
-        ListHeaderComponent={<View style={styles.header}></View>}
+        ListHeaderComponent={renderHeader}
         renderItem={({ item }) => <MovieCard />}
       />
     </SafeAreaView>
@@ -43,6 +64,10 @@ const styles = StyleSheet.create({
   listContent: {
     paddingHorizontal: 16,
     paddingBottom: 20,
+  },
+  genreList: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   row: {
     justifyContent: 'space-between',
