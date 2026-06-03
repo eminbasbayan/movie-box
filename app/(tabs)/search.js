@@ -20,11 +20,10 @@ function SearchScreen() {
         ]}
         keyExtractor={(item) => item.id}
         numColumns={2}
-        contentContainerStyle={styles.contenContainer}
         contentContainerStyle={styles.listContent}
         columnWrapperStyle={styles.row}
         ListHeaderComponent={<View style={styles.header}></View>}
-        renderItem={({ item }) => <MovieCard horizontal />}
+        renderItem={({ item }) => <MovieCard />}
       />
     </SafeAreaView>
   );

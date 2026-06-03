@@ -1,9 +1,21 @@
-import { Text, View, Image, Pressable, StyleSheet } from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  Pressable,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import Fonts from '../constants/fonts';
 
 export default function MovieCard({ horizontal }) {
   const { colors } = useTheme();
+  const { width, height } = useWindowDimensions();
+
+  const cardWidth = horizontal ? 150 : (width - 48) / 2;
+  const posterHeight = horizontal ? 225 : cardWidth * 1.5;
+
   const handlePress = () => {};
 
   return (
@@ -12,7 +24,7 @@ export default function MovieCard({ horizontal }) {
       style={({ pressed }) => [
         styles.container,
         {
-          width: 150,
+          width: cardWidth,
           backgroundColor: colors.card,
           opacity: pressed ? 0.8 : 1,
         },
@@ -23,7 +35,7 @@ export default function MovieCard({ horizontal }) {
         source={{
           uri: 'https://image.tmdb.org/t/p/w600_and_h900_face/dQgIcW6Th08kMRf2HBoYWoFE6OD.jpg',
         }}
-        style={[styles.poster, { height: 225 }]}
+        style={[styles.poster, { height: posterHeight }]}
         resizeMode="cover"
       />
       <View style={styles.info}>
