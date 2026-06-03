@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/ThemeContext';
 import Fonts from '../../constants/fonts';
 import MovieCard from '../../components/MovieCard';
+import SearchBar from '../../components/SearchBar';
 
 function SearchScreen() {
   const { colors } = useTheme();
@@ -11,7 +12,7 @@ function SearchScreen() {
       style={[styles.container, { backgroundColor: colors.background }]}
     >
       <Text style={[styles.title, { color: colors.text }]}>Ara</Text>
-
+      <SearchBar />
       <FlatList
         data={[
           { id: 1, name: 'Movie 1' },
