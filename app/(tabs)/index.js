@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/ThemeContext';
 import Fonts from '../../constants/fonts';
 import { Ionicons } from '@expo/vector-icons';
+import MovieCard from '../../components/MovieCard';
 
 function MovieSection(props) {
   const { colors } = useTheme();
@@ -19,9 +20,7 @@ function MovieSection(props) {
         ]}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View>
-            <Text>{item.name}</Text>
-          </View>
+         <MovieCard />
         )}
       />
     </View>
