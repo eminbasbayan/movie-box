@@ -8,15 +8,19 @@ import {
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import Fonts from '../constants/fonts';
+import { useRouter } from 'expo-router';
 
 export default function MovieCard({ horizontal }) {
   const { colors } = useTheme();
   const { width, height } = useWindowDimensions();
+  const router = useRouter()
 
   const cardWidth = horizontal ? 150 : (width - 48) / 2;
   const posterHeight = horizontal ? 225 : cardWidth * 1.5;
 
-  const handlePress = () => {};
+  const handlePress = () => {
+    router.push("/movie/123")
+  };
 
   return (
     <Pressable
