@@ -13,6 +13,7 @@ import { Image } from 'expo-image';
 import Fonts from '../../constants/fonts';
 import { Ionicons } from '@expo/vector-icons';
 import ActorCard from '../../components/ActorCard';
+import MovieCard from '../../components/MovieCard';
 
 function MovieDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -133,6 +134,23 @@ function MovieDetailScreen() {
             horizontal
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => <ActorCard horizontal />}
+          />
+        </View>
+
+        <View style={[styles.section, {marginBottom: 40}]}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+            Benzer Filmler
+          </Text>
+          <FlatList
+            data={[
+              { id: 1, name: 'Movie 1' },
+              { id: 2, name: 'Movie 2' },
+              { id: 3, name: 'Movie 3' },
+            ]}
+            keyExtractor={(item) => item.id.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => <MovieCard horizontal />}
           />
         </View>
       </View>
