@@ -1,5 +1,6 @@
 import { useLocalSearchParams } from 'expo-router';
 import {
+  FlatList,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -11,6 +12,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { Image } from 'expo-image';
 import Fonts from '../../constants/fonts';
 import { Ionicons } from '@expo/vector-icons';
+import ActorCard from '../../components/ActorCard';
 
 function MovieDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -116,6 +118,23 @@ function MovieDetailScreen() {
             kendilerini bu düzeni yıkmaya adayan bir grubun içine katılır.
           </Text>
         </View>
+
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+            Oyuncu Kadrosu
+          </Text>
+          <FlatList
+            data={[
+              { id: 1, name: 'Movie 1' },
+              { id: 2, name: 'Movie 2' },
+              { id: 3, name: 'Movie 3' },
+            ]}
+            keyExtractor={(item) => item.id.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => <ActorCard horizontal />}
+          />
+        </View>
       </View>
     </ScrollView>
   );
@@ -219,12 +238,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: Fonts.sizes.xl,
     fontWeight: Fonts.weights.bold,
-    marginBottom: 12
+    marginBottom: 12,
   },
-  overview:{
+  overview: {
     fontSize: Fonts.sizes.md,
-    lineHeight: 20
-  }
+    lineHeight: 20,
+  },
 });
 
 export default MovieDetailScreen;
