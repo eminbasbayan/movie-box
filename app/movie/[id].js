@@ -99,6 +99,23 @@ function MovieDetailScreen() {
             </Pressable>
           </View>
         </View>
+
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+            Özet
+          </Text>
+          <Text style={[styles.overview, { color: colors.textSecondary }]}>
+            Bir bilgisayar programcısı olan Thomas Anderson aynı zamanda Neo
+            takma isimli çok usta bir bilgisayar korsanıdır. Ancak siyah takım
+            elbiseli ve gözlüklü adamların yakın takibindedir. Bu takibin
+            nedenini ise karşılaşacağı Morpheus`dan öğrenecektir. Neo, birden
+            kendini Morpheus`un anlattıklarına güvenmek zorunda kaldığı büyük
+            bir komplonun içinde bulacaktır. İçinde yaşadığımızı sandığımız bu
+            dünya tamamiyle aldatıcıdır. Tüm insanlık aslında uzaydan gelen
+            yaratıkların köleleridir. Neo, Trinity ve Morpheus`un da yardımıyla
+            kendilerini bu düzeni yıkmaya adayan bir grubun içine katılır.
+          </Text>
+        </View>
       </View>
     </ScrollView>
   );
@@ -196,6 +213,18 @@ const styles = StyleSheet.create({
     fontSize: Fonts.sizes.sm,
     fontWeight: Fonts.weights.semibold,
   },
+  section: {
+    marginTop: 24,
+  },
+  sectionTitle: {
+    fontSize: Fonts.sizes.xl,
+    fontWeight: Fonts.weights.bold,
+    marginBottom: 12
+  },
+  overview:{
+    fontSize: Fonts.sizes.md,
+    lineHeight: 20
+  }
 });
 
 export default MovieDetailScreen;
