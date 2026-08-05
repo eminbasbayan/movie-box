@@ -67,18 +67,18 @@ export default function MovieCard({ movie, horizontal = false, mediaType }) {
 
       <View style={styles.info}>
         <Text style={[styles.title, { color: colors.text }]} numberOfLines={2}>
-          {movie.title || movie.name}
+          {movie?.title || movie?.name}
         </Text>
         <View style={styles.raingRow}>
           <View
             style={[styles.ratingBadge, { backgroundColor: colors.rating }]}
           >
             <Text style={styles.ratingText}>
-              {movie.vote_average?.toFixed(2)}
+              {movie?.vote_average?.toFixed(2)}
             </Text>
           </View>
           <Text style={[styles.year, { color: colors.textSecondary }]}>
-            {(movie.release_data || movie.first_air_date || '').split('-')[0]}
+            {(movie?.release_data || movie?.first_air_date || '').split('-')[0]}
           </Text>
         </View>
       </View>

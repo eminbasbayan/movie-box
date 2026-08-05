@@ -4,27 +4,21 @@ import { useTheme } from '../../context/ThemeContext';
 import Fonts from '../../constants/fonts';
 import { Ionicons } from '@expo/vector-icons';
 import MovieCard from '../../components/MovieCard';
-import { useEffect } from 'react';
 import { buildUrl, ENDPOINTS } from '../../constants/api';
+import useMovies from '../../hooks/useMovies';
 
-function MovieSection(props) {
+function MovieSection({ title, movies, loading, error }) {
   const { colors } = useTheme();
   return (
     <View style={styles.section}>
-      <Text style={[styles.sectionTitle, { color: colors.text }]}>
-        {props.title}
-      </Text>
+      <Text style={[styles.sectionTitle, { color: colors.text }]}>{title}</Text>
       <FlatList
-        data={[
-          { id: 1, name: 'Movie 1' },
-          { id: 2, name: 'Movie 2' },
-          { id: 3, name: 'Movie 3' },
-        ]}
+        data={movies.slice(0, 10)}
         keyExtractor={(item) => item.id.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.horizontalList}
-        renderItem={({ item }) => <MovieCard horizontal />}
+        renderItem={({ item }) => <MovieCard horizontal movie={item} />}
       />
     </View>
   );
@@ -33,28 +27,39 @@ function MovieSection(props) {
 function HomeScreen() {
   const { theme, colors, toggleTheme } = useTheme();
 
-/*   useEffect(() => {
-    fetch(buildUrl(ENDPOINTS.TRENDING_MOVIES))
-      .then((res) => res.json())
-      .then((data) => console.log(data));
-  }, []); */
+  const trending = useMovies(ENDPOINTS.TRENDING_MOVIES);
+  const popularTV = useMovies(ENDPOINTS.POPULAR_TV);
+  const topRated = useMovies(ENDPOINTS.TOP_RATED_MOVIES);
+  const upcoming = useMovies(ENDPOINTS.UPCOMING_MOVIES);
 
   const sections = [
     {
       key: 'trending',
       title: 'Trend Filmler',
+      movies: trending.movies,
+      loading: trending.loading,
+      error: trending.error,
     },
     {
       key: 'popular-tv',
       title: 'Popüler Diziler',
+      movies: popularTV.movies,
+      loading: popularTV.loading,
+      error: popularTV.error,
     },
     {
       key: 'top-rated',
       title: 'En Yüksek Puanlı',
+      movies: topRated.movies,
+      loading: topRated.loading,
+      error: topRated.error,
     },
     {
       key: 'upcoming',
       title: 'Yakında Vizyonda',
+      movies: upcoming.movies,
+      loading: upcoming.loading,
+      error: upcoming.error,
     },
   ];
 
@@ -85,7 +90,14 @@ function HomeScreen() {
             </Pressable>
           </View>
         }
-        renderItem={({ item }) => <MovieSection title={item.title} />}
+        renderItem={({ item }) => (
+          <MovieSection
+            title={item.title}
+            movies={item.movies}
+            loading={item.loading}
+            error={item.error}
+          />
+        )}
       />
     </SafeAreaView>
   );

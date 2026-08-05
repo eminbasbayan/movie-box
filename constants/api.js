@@ -6,7 +6,7 @@ const API_KEY = process.env.EXPO_PUBLIC_TMDB_API_KEY || '';
 const ENDPOINTS = {
   TRENDING_MOVIES: '/trending/movie/week',
   TOP_RATED_MOVIES: '/movie/top_rated',
-  UPCOMING_MOVIES: '/movies/upcomig',
+  UPCOMING_MOVIES: '/movie/upcoming',
   POPULAR_TV: '/tv/popular',
 
   MOVIE_DETAIL: (id) => `/movie/${id}`,
