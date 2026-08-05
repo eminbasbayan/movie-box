@@ -4,6 +4,8 @@ import { useTheme } from '../../context/ThemeContext';
 import Fonts from '../../constants/fonts';
 import { Ionicons } from '@expo/vector-icons';
 import MovieCard from '../../components/MovieCard';
+import { useEffect } from 'react';
+import { buildUrl, ENDPOINTS } from '../../constants/api';
 
 function MovieSection(props) {
   const { colors } = useTheme();
@@ -22,9 +24,7 @@ function MovieSection(props) {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.horizontalList}
-        renderItem={({ item }) => (
-         <MovieCard horizontal />
-        )}
+        renderItem={({ item }) => <MovieCard horizontal />}
       />
     </View>
   );
@@ -32,6 +32,12 @@ function MovieSection(props) {
 
 function HomeScreen() {
   const { theme, colors, toggleTheme } = useTheme();
+
+/*   useEffect(() => {
+    fetch(buildUrl(ENDPOINTS.TRENDING_MOVIES))
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  }, []); */
 
   const sections = [
     {
@@ -112,7 +118,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   section: {
-  marginBottom: 24
+    marginBottom: 24,
   },
   sectionTitle: {
     fontSize: Fonts.sizes.xl,
@@ -120,9 +126,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 12,
   },
-  horizontalList:{
-    paddingHorizontal: 16
-  }
+  horizontalList: {
+    paddingHorizontal: 16,
+  },
 });
 
 export default HomeScreen;
