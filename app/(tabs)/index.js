@@ -4,22 +4,34 @@ import { useTheme } from '../../context/ThemeContext';
 import Fonts from '../../constants/fonts';
 import { Ionicons } from '@expo/vector-icons';
 import MovieCard from '../../components/MovieCard';
-import { buildUrl, ENDPOINTS } from '../../constants/api';
+import { ENDPOINTS } from '../../constants/api';
 import useMovies from '../../hooks/useMovies';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import ErrorState from '../../components/ErrorState';
 
 function MovieSection({ title, movies, loading, error }) {
   const { colors } = useTheme();
   return (
     <View style={styles.section}>
       <Text style={[styles.sectionTitle, { color: colors.text }]}>{title}</Text>
-      <FlatList
-        data={movies.slice(0, 10)}
-        keyExtractor={(item) => item.id.toString()}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.horizontalList}
-        renderItem={({ item }) => <MovieCard horizontal movie={item} />}
-      />
+      {loading ? (
+        <View style={styles.sectionStatus}>
+          <LoadingSpinner size="small" />
+        </View>
+      ) : error ? (
+        <View style={styles.sectionStatus}>
+          <ErrorState message={error} containerStyle={styles.sectionError} />
+        </View>
+      ) : (
+        <FlatList
+          data={movies.slice(0, 10)}
+          keyExtractor={(item) => item.id.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.horizontalList}
+          renderItem={({ item }) => <MovieCard horizontal movie={item} />}
+        />
+      )}
     </View>
   );
 }
@@ -132,11 +144,20 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 24,
   },
+  sectionStatus: {
+    height: 225,
+    justifyContent: 'center',
+  },
   sectionTitle: {
     fontSize: Fonts.sizes.xl,
     fontWeight: Fonts.weights.bold,
     paddingHorizontal: 16,
     marginBottom: 12,
+  },
+  sectionError: {
+    flex: 0,
+    paddingHorizontal: 16,
+    paddingVertical: 0,
   },
   horizontalList: {
     paddingHorizontal: 16,
