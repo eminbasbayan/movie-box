@@ -14,6 +14,41 @@ import Fonts from '../../constants/fonts';
 import { Ionicons } from '@expo/vector-icons';
 import ActorCard from '../../components/ActorCard';
 import MovieCard from '../../components/MovieCard';
+import { buildUrl, ENDPOINTS } from '../../constants/api';
+
+async function fetchMovieBundle(id, type) {
+  const isTV = type === 'tv';
+  const detailEndpoint = isTV
+    ? ENDPOINTS.TV_DETAIL(id)
+    : ENDPOINTS.MOVIE_DETAIL(id);
+  const creditsEnpoint = isTV
+    ? ENDPOINTS.TV_CREDITS(id)
+    : ENDPOINTS.MOVIE_CREDITS(id);
+  const similarEndpoint = isTV
+    ? ENDPOINTS.TV_SIMILAR(id)
+    : ENDPOINTS.MOVIE_SIMILAR(id);
+
+  const [movieRes, creditsRes, similarRes] = await Promise.all([
+    fetch(buildUrl(detailEndpoint)),
+    fetch(buildUrl(creditsEnpoint)),
+    fetch(buildUrl(similarEndpoint)),
+  ]);
+
+  const movieData = await movieRes.json();
+
+  if (!movieRes.ok || movieData.success === false) {
+    throw new Error(movieData.status_message || 'Film bilgileri alınamadı!');
+  }
+
+  const creditsData = creditsRes.ok ? await creditsRes.json() : { cast: [] };
+  const similarData = similarRes.ok ? await similarRes.json() : { results: [] };
+
+  return {
+    movieData,
+    creditsData,
+    similarData,
+  };
+}
 
 function MovieDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -137,7 +172,7 @@ function MovieDetailScreen() {
           />
         </View>
 
-        <View style={[styles.section, {marginBottom: 40}]}>
+        <View style={[styles.section, { marginBottom: 40 }]}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>
             Benzer Filmler
           </Text>
