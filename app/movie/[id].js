@@ -14,7 +14,10 @@ import Fonts from '../../constants/fonts';
 import { Ionicons } from '@expo/vector-icons';
 import ActorCard from '../../components/ActorCard';
 import MovieCard from '../../components/MovieCard';
-import { buildUrl, ENDPOINTS } from '../../constants/api';
+import { buildUrl, ENDPOINTS, IMAGE_SIZES } from '../../constants/api';
+import { useEffect, useState } from 'react';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import ErrorState from '../../components/ErrorState';
 
 async function fetchMovieBundle(id, type) {
   const isTV = type === 'tv';
@@ -51,11 +54,75 @@ async function fetchMovieBundle(id, type) {
 }
 
 function MovieDetailScreen() {
-  const { id } = useLocalSearchParams();
+  const { id, type = 'movie' } = useLocalSearchParams();
   const { colors } = useTheme();
   const { width } = useWindowDimensions();
 
-  console.log(id);
+  const [movie, setMovie] = useState(null);
+  const [credits, setCredits] = useState(null);
+  const [similar, setSimilar] = useState([]);
+
+  console.log(movie);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const isTV = type === 'tv';
+
+  useEffect(() => {
+    const loadMovieData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const { movieData, creditsData, similerData } = await fetchMovieBundle(
+          id,
+          type,
+        );
+
+        setMovie(movieData);
+        setCredits(creditsData);
+        setCredits(similerData?.results || []);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMovieData();
+  }, [id, type]);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <ErrorState message={error} />;
+  }
+
+  const backdropUrl = movie?.backdrop_path
+    ? `${IMAGE_SIZES.backdrop.large}${movie.backdrop_path}`
+    : null;
+
+  const posterUrl = movie?.poster_path
+    ? `${IMAGE_SIZES.poster.large}${movie.poster_path}`
+    : null;
+
+  const title = isTV ? movie.name : movie.title;
+
+  const releaseData = isTV ? movie.first_air_data : movie.release_date;
+
+  const runtime = isTV ? movie.episode_run_time?.[0] : movie.runtive;
+
+  const formatRuntime = (minutes) => {
+    if (!minutes) return '';
+
+    const hour = Math.floor(minutes / 60);
+    const minute = minutes % 60;
+
+    return `${hour}s ${minute}dk`;
+  };
 
   return (
     <ScrollView
