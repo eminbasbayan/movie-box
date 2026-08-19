@@ -278,18 +278,14 @@ function MovieDetailScreen() {
 
         <View style={[styles.section, { marginBottom: 40 }]}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            Benzer Filmler
+            Benzer {isTV ? "Diziler" : "Filmler"}
           </Text>
           <FlatList
-            data={[
-              { id: 1, name: 'Movie 1' },
-              { id: 2, name: 'Movie 2' },
-              { id: 3, name: 'Movie 3' },
-            ]}
+            data={similar.slice(0, 10)}
             keyExtractor={(item) => item.id.toString()}
             horizontal
             showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => <MovieCard horizontal />}
+            renderItem={({ item }) => <MovieCard movie={item} horizontal />}
           />
         </View>
       </View>
