@@ -1,8 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { useTheme } from '../../context/ThemeContext';
+import { useFavorites } from '../../context/FavoritesContext';
 
 export default function TabLayout() {
+  const {favorites} = useFavorites()
   const { colors } = useTheme();
   return (
     <Tabs
@@ -44,11 +46,18 @@ export default function TabLayout() {
 
       <Tabs.Screen
         name="favorites"
+        
         options={{
           title: 'Favoriler',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="heart" size={size} color={color} />
           ),
+          tabBarBadge: favorites.length > 0 ? favorites.length : undefined,
+          tabBarBadgeStyle: {
+            backgroundColor: colors.primary,
+            fontSize: 10,
+            fontWeight: 700,
+          }
         }}
       />
     </Tabs>
