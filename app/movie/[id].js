@@ -7,9 +7,9 @@ import {
   Text,
   useWindowDimensions,
   View,
+  Image,
 } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
-import { Image } from 'expo-image';
 import Fonts from '../../constants/fonts';
 import { Ionicons } from '@expo/vector-icons';
 import ActorCard from '../../components/ActorCard';
@@ -24,7 +24,7 @@ async function fetchMovieBundle(id, type) {
   const detailEndpoint = isTV
     ? ENDPOINTS.TV_DETAIL(id)
     : ENDPOINTS.MOVIE_DETAIL(id);
-  const creditsEnpoint = isTV
+  const creditsEndpoint = isTV
     ? ENDPOINTS.TV_CREDITS(id)
     : ENDPOINTS.MOVIE_CREDITS(id);
   const similarEndpoint = isTV
@@ -33,7 +33,7 @@ async function fetchMovieBundle(id, type) {
 
   const [movieRes, creditsRes, similarRes] = await Promise.all([
     fetch(buildUrl(detailEndpoint)),
-    fetch(buildUrl(creditsEnpoint)),
+    fetch(buildUrl(creditsEndpoint)),
     fetch(buildUrl(similarEndpoint)),
   ]);
 
@@ -75,14 +75,14 @@ function MovieDetailScreen() {
       setError(null);
 
       try {
-        const { movieData, creditsData, similerData } = await fetchMovieBundle(
+        const { movieData, creditsData, similarData } = await fetchMovieBundle(
           id,
           type,
         );
 
         setMovie(movieData);
         setCredits(creditsData);
-        setCredits(similerData?.results || []);
+        setSimilar(similarData?.results || []);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -111,9 +111,9 @@ function MovieDetailScreen() {
 
   const title = isTV ? movie.name : movie.title;
 
-  const releaseData = isTV ? movie.first_air_data : movie.release_date;
+  const releaseData = isTV ? movie.first_air_date : movie.release_date;
 
-  const runtime = isTV ? movie.episode_run_time?.[0] : movie.runtive;
+  const runtime = isTV ? movie.episode_run_time?.[0] : movie.runtime;
 
   const formatRuntime = (minutes) => {
     if (!minutes) return '';
@@ -127,29 +127,62 @@ function MovieDetailScreen() {
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.background }]}
+      showsVerticalScrollIndicator={false}
     >
       <View
-        style={[styles.backdropContainer, { backgroundColor: colors.surface }]}
+        style={[
+          styles.backdropContainer,
+          !backdropUrl && { backgroundColor: colors.surface },
+        ]}
       >
-        <Image
-          source={{
-            uri: 'https://media.themoviedb.org/t/p/w533_and_h300_face/tlm8UkiQsitc8rSuIAscQDCnP8d.jpg',
-          }}
-          style={[styles.backdrop, { width }]}
-          resizeMode="cover"
-        />
-        <View style={styles.backdropOverlay} />
+        {backdropUrl ? (
+          <>
+            <Image
+              source={{
+                uri: backdropUrl,
+              }}
+              style={[styles.backdrop, { width }]}
+              resizeMode="cover"
+            />
+            <View style={styles.backdropOverlay} />
+          </>
+        ) : (
+          <View style={[styles.backdrop, styles.backdropFallback, { width }]}>
+            <Ionicons name="film-outline" size={52} color={colors.textMuted} />
+          </View>
+        )}
       </View>
 
       <View style={styles.content}>
         <View style={styles.posterRow}>
-          <Image
-            source={{
-              uri: 'https://image.tmdb.org/t/p/w600_and_h900_face/gmZiGUwRyiTzGMTStgeo1a5xRpu.jpg',
-            }}
-            style={styles.poster}
-            resizeMode="cover"
-          />
+          {posterUrl ? (
+            <Image
+              source={{
+                uri: posterUrl,
+              }}
+              style={styles.poster}
+              resizeMode="cover"
+            />
+          ) : (
+            <View
+              style={[
+                styles.poster,
+                styles.posterFallback,
+                { backgroundColor: colors.surface, borderColor: colors.border },
+              ]}
+            >
+              <Ionicons
+                name="image-outline"
+                size={34}
+                color={colors.textMuted}
+              />
+              <Text
+                style={[styles.posterFallbackText, { color: colors.textMuted }]}
+              >
+                Görsel Yok
+              </Text>
+            </View>
+          )}
 
           <View style={styles.infoColumn}>
             <Text style={[styles.title, { color: colors.text }]}>Matrix</Text>
@@ -270,6 +303,10 @@ const styles = StyleSheet.create({
   backdrop: {
     height: 250,
   },
+  backdropFallback: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 
   backdropOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -287,6 +324,16 @@ const styles = StyleSheet.create({
     width: 130,
     height: 195,
     borderRadius: 12,
+  },
+  posterFallback: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderWidth: 1,
+  },
+  posterFallbackText: {
+    fontSize: Fonts.sizes.sm,
+    fontWeight: Fonts.weights.semibold,
   },
   infoColumn: {
     paddingTop: 30,
