@@ -18,6 +18,7 @@ import { buildUrl, ENDPOINTS, IMAGE_SIZES } from '../../constants/api';
 import { useEffect, useState } from 'react';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import ErrorState from '../../components/ErrorState';
+import { useFavorites } from '../../context/FavoritesContext';
 
 async function fetchMovieBundle(id, type) {
   const isTV = type === 'tv';
@@ -56,6 +57,7 @@ async function fetchMovieBundle(id, type) {
 function MovieDetailScreen() {
   const { id, type = 'movie' } = useLocalSearchParams();
   const { colors } = useTheme();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const { width } = useWindowDimensions();
 
   const [movie, setMovie] = useState(null);
@@ -67,7 +69,8 @@ function MovieDetailScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const isTV = type === 'tv';
+  const mediaType = Array.isArray(type) ? type[0] : type;
+  const isTV = mediaType === 'tv';
 
   useEffect(() => {
     const loadMovieData = async () => {
@@ -114,6 +117,7 @@ function MovieDetailScreen() {
   const releaseDate = isTV ? movie.first_air_date : movie.release_date;
 
   const runtime = isTV ? movie.episode_run_time?.[0] : movie.runtime;
+  const favorite = isFavorite(movie.id);
 
   const formatRuntime = (minutes) => {
     if (!minutes) return '';
@@ -241,13 +245,22 @@ function MovieDetailScreen() {
               ))}
             </View>
             <Pressable
+              onPress={() =>
+                toggleFavorite({ ...movie, media_type: mediaType })
+              }
               style={[
                 styles.favoriteButton,
                 { backgroundColor: colors.primary },
               ]}
             >
-              <Ionicons name="heart" size={20} color="#fff" />
-              <Text style={styles.favoriteButtonText}>Favorilere Ekle</Text>
+              <Ionicons
+                name={favorite ? 'heart' : 'heart-outline'}
+                size={20}
+                color="#fff"
+              />
+              <Text style={styles.favoriteButtonText}>
+                {favorite ? 'Favorilerden Çıkar' : 'Favorilere Ekle'}
+              </Text>
             </Pressable>
           </View>
         </View>
@@ -271,14 +284,14 @@ function MovieDetailScreen() {
               keyExtractor={(item) => item.id.toString()}
               horizontal
               showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => <ActorCard  actor={item} />}
+              renderItem={({ item }) => <ActorCard actor={item} />}
             />
           </View>
         )}
 
         <View style={[styles.section, { marginBottom: 40 }]}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            Benzer {isTV ? "Diziler" : "Filmler"}
+            Benzer {isTV ? 'Diziler' : 'Filmler'}
           </Text>
           <FlatList
             data={similar.slice(0, 10)}
