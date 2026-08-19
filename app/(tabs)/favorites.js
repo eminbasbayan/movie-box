@@ -5,28 +5,31 @@ import Fonts from '../../constants/fonts';
 import MovieCard from '../../components/MovieCard';
 import SearchBar from '../../components/SearchBar';
 import GenreChip from '../../components/GenreChip';
+import { useFavorites } from '../../context/FavoritesContext';
 
 function FavoritesScreen() {
+  const {favorites} = useFavorites()
   const { colors } = useTheme();
 
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
     >
-      <Text style={[styles.title, { color: colors.text }]}>Favoriler</Text>
-      <Text style={[styles.count, { color: colors.textSecondary }]}>1 film</Text>
+      <Text style={[styles.title, { color: colors.text }]}>Favorilerim</Text>
+      <Text style={[styles.count, { color: colors.textSecondary }]}>{favorites.length} film</Text>
       
       <FlatList
-        data={[
-          { id: 1, name: 'Movie 1' },
-          { id: 2, name: 'Movie 2' },
-          { id: 3, name: 'Movie 3' },
-        ]}
-        keyExtractor={(item) => item.id}
+        data={favorites}
+        keyExtractor={(item, index) => item.id?.toString() || `fav-${index}`}
         numColumns={2}
         contentContainerStyle={styles.listContent}
         columnWrapperStyle={styles.row}
-        renderItem={({ item }) => <MovieCard />}
+        ListEmptyComponent={
+          <View>
+            <Text style={{color: "#fff"}}>Favorilerde hiç film yok!</Text>
+          </View>
+        }
+        renderItem={({ item }) => <MovieCard movie={item} />}
       />
     </SafeAreaView>
   );
