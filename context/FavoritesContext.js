@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const FavoritesContext = createContext();
 
@@ -85,4 +85,12 @@ export function FavoritesProvider({ children }) {
       {children}
     </FavoritesContext.Provider>
   );
+}
+
+export function useFavorites() {
+  const context = useContext(FavoritesContext);
+  if (!context) {
+    throw new Error('useFavorites, FavoritesProvider içinde kullanılmalıdır!');
+  }
+  return context
 }

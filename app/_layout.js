@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 import ThemeProvider, { useTheme } from '../context/ThemeContext';
 import { StatusBar } from 'expo-status-bar';
+import { FavoritesProvider } from '../context/FavoritesContext';
 
 function RootLayoutContent() {
   const { colors, theme } = useTheme();
@@ -32,7 +33,9 @@ function RootLayoutContent() {
 function RootLayout() {
   return (
     <ThemeProvider>
-      <RootLayoutContent />
+      <FavoritesProvider>
+        <RootLayoutContent />
+      </FavoritesProvider>
     </ThemeProvider>
   );
 }
