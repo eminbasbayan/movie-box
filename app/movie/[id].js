@@ -111,7 +111,7 @@ function MovieDetailScreen() {
 
   const title = isTV ? movie.name : movie.title;
 
-  const releaseData = isTV ? movie.first_air_date : movie.release_date;
+  const releaseDate = isTV ? movie.first_air_date : movie.release_date;
 
   const runtime = isTV ? movie.episode_run_time?.[0] : movie.runtime;
 
@@ -185,46 +185,60 @@ function MovieDetailScreen() {
           )}
 
           <View style={styles.infoColumn}>
-            <Text style={[styles.title, { color: colors.text }]}>Matrix</Text>
+            <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
             <View style={styles.metaRow}>
               <View
                 style={[styles.ratingBadge, { backgroundColor: colors.rating }]}
               >
                 <Ionicons name="star" size={14} color="#000" />
-                <Text style={styles.ratingText}>8.2</Text>
+                <Text style={styles.ratingText}>
+                  {movie.vote_average?.toFixed(1)}
+                </Text>
               </View>
+              {isTV && movie.number_of_seasons && (
+                <Text
+                  style={[
+                    styles.detailText,
+                    {
+                      color: colors.textSecondary,
+                    },
+                  ]}
+                >
+                  {movie.number_of_seasons} Sezon
+                </Text>
+              )}
             </View>
             <View style={styles.detailsRow}>
-              <Text
-                style={[styles.detailText, { color: colors.textSecondary }]}
-              >
-                1999
-              </Text>
-              <Text
-                style={[styles.detailText, { color: colors.textSecondary }]}
-              >
-                2s 16dk
-              </Text>
+              {releaseDate && (
+                <Text
+                  style={[styles.detailText, { color: colors.textSecondary }]}
+                >
+                  {releaseDate.split('-')[0]}
+                </Text>
+              )}
+
+              {runtime && (
+                <Text
+                  style={[styles.detailText, { color: colors.textSecondary }]}
+                >
+                  {formatRuntime(runtime)}
+                  {isTV ? ' / bölüm' : ''}
+                </Text>
+              )}
             </View>
             <View style={styles.genreRow}>
-              <View
-                style={[styles.genreTag, { backgroundColor: colors.surface }]}
-              >
-                <Text
-                  style={[styles.genreText, { color: colors.textSecondary }]}
+              {movie.genres?.slice(0, 3).map((genre) => (
+                <View
+                  style={[styles.genreTag, { backgroundColor: colors.surface }]}
+                  key={genre.id}
                 >
-                  Aksiyon
-                </Text>
-              </View>
-              <View
-                style={[styles.genreTag, { backgroundColor: colors.surface }]}
-              >
-                <Text
-                  style={[styles.genreText, { color: colors.textSecondary }]}
-                >
-                  Bilim-Kurgu
-                </Text>
-              </View>
+                  <Text
+                    style={[styles.genreText, { color: colors.textSecondary }]}
+                  >
+                    {genre.name}
+                  </Text>
+                </View>
+              ))}
             </View>
             <Pressable
               style={[
@@ -237,40 +251,30 @@ function MovieDetailScreen() {
             </Pressable>
           </View>
         </View>
-
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            Özet
-          </Text>
-          <Text style={[styles.overview, { color: colors.textSecondary }]}>
-            Bir bilgisayar programcısı olan Thomas Anderson aynı zamanda Neo
-            takma isimli çok usta bir bilgisayar korsanıdır. Ancak siyah takım
-            elbiseli ve gözlüklü adamların yakın takibindedir. Bu takibin
-            nedenini ise karşılaşacağı Morpheus`dan öğrenecektir. Neo, birden
-            kendini Morpheus`un anlattıklarına güvenmek zorunda kaldığı büyük
-            bir komplonun içinde bulacaktır. İçinde yaşadığımızı sandığımız bu
-            dünya tamamiyle aldatıcıdır. Tüm insanlık aslında uzaydan gelen
-            yaratıkların köleleridir. Neo, Trinity ve Morpheus`un da yardımıyla
-            kendilerini bu düzeni yıkmaya adayan bir grubun içine katılır.
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            Oyuncu Kadrosu
-          </Text>
-          <FlatList
-            data={[
-              { id: 1, name: 'Movie 1' },
-              { id: 2, name: 'Movie 2' },
-              { id: 3, name: 'Movie 3' },
-            ]}
-            keyExtractor={(item) => item.id.toString()}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => <ActorCard horizontal />}
-          />
-        </View>
+        {movie.overview && (
+          <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              Özet
+            </Text>
+            <Text style={[styles.overview, { color: colors.textSecondary }]}>
+              {movie.overview}
+            </Text>
+          </View>
+        )}
+        {credits?.cast?.length > 0 && (
+          <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              Oyuncu Kadrosu
+            </Text>
+            <FlatList
+              data={credits.cast.slice(0, 15)}
+              keyExtractor={(item) => item.id.toString()}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => <ActorCard  actor={item} />}
+            />
+          </View>
+        )}
 
         <View style={[styles.section, { marginBottom: 40 }]}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>
