@@ -15,23 +15,49 @@ function SearchScreen() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedGenre, setSelectedGenre] = useState(null);
 
   const debouncedQuery = useDebounce(query, 500);
+
+  async function getMoviesByGenre(genreId) {
+    setSelectedGenre(genreId);
+    setLoading(true);
+    setError(null);
+
+    try {
+      const url = buildUrl(ENDPOINTS.DISCOVER_MOVIES, { with_genres: genreId });
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      setResults(data.results || []);
+    } catch (error) {
+      setError('Arama sırasında bir hata oluştu!');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   function renderHeader() {
     return (
       <View>
         <FlatList
           data={[
-            { id: 1, name: 'Aksiyon' },
-            { id: 2, name: 'Macera' },
-            { id: 3, name: 'Animasyon' },
+            { id: 28, name: 'Aksiyon' },
+            { id: 12, name: 'Macera' },
+            { id: 16, name: 'Animasyon' },
           ]}
           keyExtractor={(item) => item.id.toString()}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.genreList}
-          renderItem={({ item }) => <GenreChip genre={item} />}
+          renderItem={({ item }) => (
+            <GenreChip
+              genre={item}
+              onPress={getMoviesByGenre}
+              active={selectedGenre === item.id}
+            />
+          )}
         />
       </View>
     );
@@ -102,7 +128,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   row: {
-    gap: 12
+    gap: 12,
   },
 });
 

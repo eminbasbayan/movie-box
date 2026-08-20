@@ -19,7 +19,7 @@ const ENDPOINTS = {
 
   // Arama
   SEARCH_MOVIE: '/search/movie',
-  DISCOVER_MOVIES: '/search/movie',
+  DISCOVER_MOVIES: '/discover/movie',
 };
 
 const IMAGE_SIZES = {
