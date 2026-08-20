@@ -3,7 +3,11 @@ import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import Fonts from '../constants/fonts';
 
-export default function SearchBar() {
+export default function SearchBar({
+  value,
+  onChangeText,
+  placeholder = 'Bir Film ara...',
+}) {
   const { colors } = useTheme();
   return (
     <View
@@ -20,14 +24,18 @@ export default function SearchBar() {
       />
       <TextInput
         style={[styles.input, { color: colors.text }]}
-        placeholder="Bir film ara..."
+        placeholder={placeholder}
         placeholderTextColor={colors.textMuted}
         autoCapitalize="none"
         autoCorrect={false}
+        onChangeText={onChangeText}
+        value={value}
       />
-      <Pressable>
-        <Ionicons name="close-circle" size={20} color={colors.textMuted} />
-      </Pressable>
+      {value?.length > 0 && (
+        <Pressable onPress={()=> onChangeText("")}>
+          <Ionicons name="close-circle" size={20} color={colors.textMuted} />
+        </Pressable>
+      )}
     </View>
   );
 }
