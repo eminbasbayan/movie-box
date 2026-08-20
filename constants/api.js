@@ -16,6 +16,10 @@ const ENDPOINTS = {
   TV_DETAIL: (id) => `/tv/${id}`,
   TV_CREDITS: (id) => `/tv/${id}/credits`,
   TV_SIMILAR: (id) => `/tv/${id}/similar`,
+
+  // Arama
+  SEARCH_MOVIE: '/search/movie',
+  DISCOVER_MOVIES: '/search/movie',
 };
 
 const IMAGE_SIZES = {
@@ -31,8 +35,18 @@ const IMAGE_SIZES = {
   },
 };
 
-const buildUrl = (endpoint) => {
-  return `${API_BASE_URL}${endpoint}?api_key=${API_KEY}&language=tr-TR`;
+const buildUrl = (endpoint, params = {}) => {
+  const url = new URL(`${API_BASE_URL}${endpoint}`);
+  url.searchParams.append('api_key', API_KEY);
+  url.searchParams.append('language', 'tr-TR');
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      url.searchParams.append(key, String(value));
+    }
+  });
+
+  return url.toString();
 };
 
 export { buildUrl, ENDPOINTS, IMAGE_SIZES };

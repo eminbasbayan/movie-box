@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/ThemeContext';
@@ -5,9 +6,17 @@ import Fonts from '../../constants/fonts';
 import MovieCard from '../../components/MovieCard';
 import SearchBar from '../../components/SearchBar';
 import GenreChip from '../../components/GenreChip';
+import useDebounce from '../../hooks/useDebounce';
+import { buildUrl, ENDPOINTS } from '../../constants/api';
 
 function SearchScreen() {
   const { colors } = useTheme();
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const debouncedQuery = useDebounce(query, 500);
 
   function renderHeader() {
     return (
@@ -28,24 +37,47 @@ function SearchScreen() {
     );
   }
 
+  useEffect(() => {
+    if (debouncedQuery.length < 2) {
+      setResults([]);
+      return;
+    }
+
+    const searchMovies = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const url = buildUrl(ENDPOINTS.SEARCH_MOVIE, { query: debouncedQuery });
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        setResults(data.results || []);
+      } catch (error) {
+        setError('Arama sırasında bir hata oluştu!');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    searchMovies();
+  }, [debouncedQuery]);
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
     >
       <Text style={[styles.title, { color: colors.text }]}>Ara</Text>
-      <SearchBar />
+      <SearchBar value={query} onChangeText={setQuery} />
       <FlatList
-        data={[
-          { id: 1, name: 'Movie 1' },
-          { id: 2, name: 'Movie 2' },
-          { id: 3, name: 'Movie 3' },
-        ]}
+        data={results}
         keyExtractor={(item) => item.id}
         numColumns={2}
         contentContainerStyle={styles.listContent}
         columnWrapperStyle={styles.row}
         ListHeaderComponent={renderHeader}
-        renderItem={({ item }) => <MovieCard />}
+        renderItem={({ item }) => <MovieCard movie={item} />}
       />
     </SafeAreaView>
   );
@@ -70,7 +102,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   row: {
-    justifyContent: 'space-between',
+    gap: 12
   },
 });
 
