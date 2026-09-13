@@ -58,5 +58,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: Fonts.sizes.lg,
     paddingVertical: 0,
+    outlineStyle: 'none',
+    outlineWidth: 0,
   },
 });
